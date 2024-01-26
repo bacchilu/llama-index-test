@@ -1,6 +1,7 @@
 import logging
 import os
 import requests
+import itertools
 
 from llama_index import (
     VectorStoreIndex,
@@ -17,14 +18,27 @@ logging.basicConfig(filename="./debug.log", level=logging.DEBUG)
 PERSIST_DIR = "./storage"
 
 
-def do_indexing():
+class DirectoryLoader:
+    def __init__(self, folder: str):
+        self.folder = folder
+
+    def __call__(self):
+        return SimpleDirectoryReader(self.folder).load_data()
+
+
+class ApiLoader:
+    def __init__(self, url: str):
+        self.url = url
+
+    def __call__(self):
+        data = requests.get(self.url).json()
+        return download_loader("JsonDataReader")().load_data(data)
+
+
+def do_indexing(*loaders):
     """Load data and build an index"""
     if not os.path.exists(PERSIST_DIR):
-        documents = SimpleDirectoryReader("data").load_data()
-
-        data = requests.get("https://www.life365.eu/api/products/20406").json()
-        documents = [*documents, *download_loader("JsonDataReader")().load_data(data)]
-
+        documents = list(itertools.chain(*[loader() for loader in loaders]))
         index = VectorStoreIndex.from_documents(documents)
         index.storage_context.persist(persist_dir=PERSIST_DIR)
     else:
@@ -46,9 +60,10 @@ def print_qa(index: VectorStoreIndex, prompt: str):
 
 
 if __name__ == "__main__":
-    index = do_indexing()
+    index = do_indexing(
+        DirectoryLoader("data"), ApiLoader("https://www.life365.eu/api/products/20406")
+    )
     print_qa(index, "Mi consigli un buon monitor?")
     print_qa(index, "Chi consiglia di mettere il sale nel tè?")
     print_qa(index, "What did the author do growing up?")
     print_qa(index, "Cos'è successo Mercoledì in Sicilia?")
-    print_qa(index, "Where is Forlì?")
