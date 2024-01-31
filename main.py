@@ -2,7 +2,9 @@ import logging
 import os
 import requests
 import itertools
+import random
 
+import openai
 from llama_index import (
     VectorStoreIndex,
     SimpleDirectoryReader,
@@ -10,6 +12,11 @@ from llama_index import (
     load_index_from_storage,
     download_loader,
 )
+
+from keys import OPENAI_KEY
+
+
+openai.api_key = OPENAI_KEY
 
 
 logging.basicConfig(filename="./debug.log", level=logging.DEBUG)
@@ -63,7 +70,12 @@ if __name__ == "__main__":
     index = do_indexing(
         DirectoryLoader("data"), ApiLoader("https://www.life365.eu/api/products/20406")
     )
-    print_qa(index, "Mi consigli un buon monitor?")
-    print_qa(index, "Chi consiglia di mettere il sale nel tè?")
-    print_qa(index, "What did the author do growing up?")
-    print_qa(index, "Cos'è successo Mercoledì in Sicilia?")
+    q = random.choice(
+        (
+            "Mi consigli un buon monitor?",
+            "Chi consiglia di mettere il sale nel tè?",
+            "What did the author do growing up?",
+            "Cos'è successo Mercoledì in Sicilia?",
+        )
+    )
+    print_qa(index, q)
