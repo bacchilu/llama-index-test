@@ -1,5 +1,6 @@
 import os
 import logging
+import random
 
 import openai
 from pinecone import Pinecone
@@ -56,6 +57,10 @@ if __name__ == "__main__":
         ),
     )
     query_engine = loaded_index.as_query_engine()
-    print_qa(
-        query_engine.query, "Puoi suggerirmi un buon cavo di alimentazione? Anzi, due!"
+    q = random.choice(
+        (
+            "Mi serve un buon toner per una stampante HP",
+            "Puoi suggerirmi un buon cavo di alimentazione? Anzi, due!",
+        )
     )
+    print_qa(query_engine.query, q)
