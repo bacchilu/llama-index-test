@@ -1,6 +1,5 @@
 import os
 import logging
-from typing import Callable
 
 import openai
 from pinecone import Pinecone
