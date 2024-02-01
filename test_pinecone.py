@@ -9,6 +9,9 @@ from llama_index.vector_stores import PineconeVectorStore
 from llama_index.embeddings import OpenAIEmbedding
 from dotenv import load_dotenv
 
+from utils import print_qa
+
+
 load_dotenv()
 OPENAI_KEY = os.getenv("OPENAI_KEY")
 PINECONE_KEY = os.getenv("PINECONE_KEY")
@@ -27,12 +30,6 @@ EMBEDDING_MODEL = "text-embedding-3-small"
 def text_to_vector(text):
     embed_model = OpenAIEmbedding(model=EMBEDDING_MODEL)
     return embed_model.get_text_embedding(text)
-
-
-def print_qa(query_fn: Callable[[str], str], prompt: str):
-    print(f"=> {prompt}")
-    print(f"<= {query_fn(prompt)}")
-    print()
 
 
 if __name__ == "__main__":

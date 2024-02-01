@@ -3,7 +3,6 @@ import os
 import requests
 import itertools
 import random
-from typing import Callable
 
 import openai
 from llama_index import (
@@ -14,6 +13,8 @@ from llama_index import (
     download_loader,
 )
 from dotenv import load_dotenv
+
+from utils import print_qa
 
 
 load_dotenv()
@@ -56,12 +57,6 @@ def do_indexing(*loaders):
         storage_context = StorageContext.from_defaults(persist_dir=PERSIST_DIR)
         index = load_index_from_storage(storage_context)
     return index
-
-
-def print_qa(query_fn: Callable[[str], str], prompt: str):
-    print(f"=> {prompt}")
-    print(f"<= {query_fn(prompt)}")
-    print()
 
 
 if __name__ == "__main__":
