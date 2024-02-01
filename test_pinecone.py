@@ -1,12 +1,17 @@
+import os
 import logging
+from typing import Callable
 
 import openai
 from pinecone import Pinecone
 from llama_index import VectorStoreIndex, ServiceContext
 from llama_index.vector_stores import PineconeVectorStore
 from llama_index.embeddings import OpenAIEmbedding
+from dotenv import load_dotenv
 
-from keys import PINECONE_KEY, OPENAI_KEY
+load_dotenv()
+OPENAI_KEY = os.getenv("OPENAI_KEY")
+PINECONE_KEY = os.getenv("PINECONE_KEY")
 
 
 logging.basicConfig(filename="./debug.log", level=logging.DEBUG)
@@ -15,7 +20,6 @@ logging.basicConfig(filename="./debug.log", level=logging.DEBUG)
 openai.api_key = OPENAI_KEY
 
 
-API_KEY = PINECONE_KEY
 INDEX_NAME = "life365"
 EMBEDDING_MODEL = "text-embedding-3-small"
 
@@ -25,8 +29,14 @@ def text_to_vector(text):
     return embed_model.get_text_embedding(text)
 
 
+def print_qa(query_fn: Callable[[str], str], prompt: str):
+    print(f"=> {prompt}")
+    print(f"<= {query_fn(prompt)}")
+    print()
+
+
 if __name__ == "__main__":
-    p_client = Pinecone(api_key=API_KEY)
+    p_client = Pinecone(api_key=PINECONE_KEY)
     index = p_client.Index(INDEX_NAME)
 
     # query_vector = text_to_vector(
@@ -49,9 +59,7 @@ if __name__ == "__main__":
             embed_model=OpenAIEmbedding(model=EMBEDDING_MODEL)
         ),
     )
-
     query_engine = loaded_index.as_query_engine()
-    query_response = query_engine.query(
-        "Puoi suggerirmi un buon cavo di alimentazione? Anzi, due!"
+    print_qa(
+        query_engine.query, "Puoi suggerirmi un buon cavo di alimentazione? Anzi, due!"
     )
-    print(query_response)

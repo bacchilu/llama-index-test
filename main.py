@@ -3,6 +3,7 @@ import os
 import requests
 import itertools
 import random
+from typing import Callable
 
 import openai
 from llama_index import (
@@ -12,8 +13,11 @@ from llama_index import (
     load_index_from_storage,
     download_loader,
 )
+from dotenv import load_dotenv
 
-from keys import OPENAI_KEY
+
+load_dotenv()
+OPENAI_KEY = os.getenv("OPENAI_KEY")
 
 
 openai.api_key = OPENAI_KEY
@@ -54,15 +58,9 @@ def do_indexing(*loaders):
     return index
 
 
-def query(index: VectorStoreIndex, prompt: str):
-    """Query your data"""
-    query_engine = index.as_query_engine()
-    return query_engine.query(prompt)
-
-
-def print_qa(index: VectorStoreIndex, prompt: str):
+def print_qa(query_fn: Callable[[str], str], prompt: str):
     print(f"=> {prompt}")
-    print(f"<= {query(index, prompt)}")
+    print(f"<= {query_fn(prompt)}")
     print()
 
 
@@ -70,6 +68,7 @@ if __name__ == "__main__":
     index = do_indexing(
         DirectoryLoader("data"), ApiLoader("https://www.life365.eu/api/products/20406")
     )
+    query_engine = index.as_query_engine()
     q = random.choice(
         (
             "Mi consigli un buon monitor?",
@@ -78,4 +77,4 @@ if __name__ == "__main__":
             "Cos'è successo Mercoledì in Sicilia?",
         )
     )
-    print_qa(index, q)
+    print_qa(query_engine.query, q)
