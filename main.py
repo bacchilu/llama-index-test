@@ -44,7 +44,14 @@ class ApiLoader:
 
     def __call__(self):
         data = requests.get(self.url).json()
-        return download_loader("JsonDataReader")().load_data(data)
+        documents = download_loader("JsonDataReader")().load_data(data)
+        for d in documents:
+            d.metadata = {
+                "url": self.url,
+                "id": data["id"],
+                "code_simple": data["code_simple"],
+            }
+        return documents
 
 
 def do_indexing(*loaders):
