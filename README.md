@@ -2,18 +2,15 @@ Install dependencies:
 
     pip3 install -r requirements.txt
 
-Set the OpenAI API Key:
-
-    export OPENAI_API_KEY=<API KEY>
-
 Execute:
 
     python3 main.py
+    python3 test_pinecone.py
 
 The answer is something like this:
 
 ```
-(ENV) bacchilu@bacchilu-M1050:~/Scrivania/dev/me/llama-index-test$ python3 main.py 
+(ENV) bacchilu@bacchilu-M1050:~/Scrivania/dev/me/llama-index-test$ python3 main.py
 => Mi consigli un buon monitor?
 <= Sì, ti consiglio il monitor 24'' Full HD UNIARCH, modello MT-24-L. Ha un display True Color, risoluzione FULLHD 1920x1280 e un'ampia visuale di 170° (H)/ 160° (V). È dotato di un menu interattivo multilingua e ha un basso consumo energetico. Inoltre, supporta il riconoscimento adattivo del segnale video e ha uno standard VESA di 100mm x 100mm.
 
