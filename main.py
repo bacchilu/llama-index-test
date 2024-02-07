@@ -49,7 +49,9 @@ class ApiLoader:
             d.metadata = {
                 "url": self.url,
                 "id": data["id"],
+                "barcode": data["barcode"],
                 "code_simple": data["code_simple"],
+                "brand": data["brand"],
             }
         return documents
 

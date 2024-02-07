@@ -61,6 +61,7 @@ if __name__ == "__main__":
         (
             "Mi serve un buon toner per una stampante HP",
             "Puoi suggerirmi un buon cavo di alimentazione? Anzi, due!",
+            "Mi consigli un buon monitor?",
         )
     )
     print_qa(query_engine.query, q)
